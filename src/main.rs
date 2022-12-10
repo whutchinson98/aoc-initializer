@@ -17,6 +17,7 @@ async fn main() {
         .expect("You need to have the AOC_SESSION_ID as an environment variable");
 
     let main_rs_content = include_str!("./template_main");
+    let gitignore_content = include_str!("./template_gitignore");
 
     let args = Cli::parse();
 
@@ -31,6 +32,7 @@ async fn main() {
     write_input_to_file(&args.day, &res.ok().unwrap());
 
     update_main_rs(&args.day,&main_rs_content);
+    update_gitignore(&args.day,&gitignore_content);
 }
 
 fn create_cargo_project(day: &i32) {
@@ -80,4 +82,13 @@ fn update_main_rs(day: &i32, content:&str) {
         fs::remove_file(&main_rs).expect("Unable to write file");
     }
     fs::write(&main_rs, content).expect("Unable to write file");
+}
+
+fn update_gitignore(day: &i32, content:&str) {
+    let gitignore = format!("./q{day}/.gitignore", day = day);
+    let exists = path::Path::new(&gitignore).exists();
+    if exists {
+        fs::remove_file(&gitignore).expect("Unable to write file");
+    }
+    fs::write(&gitignore, content).expect("Unable to write file");
 }
